@@ -1,4 +1,4 @@
-%viveEn(rata)
+%viveEn(rata, restaurante)
 viveEn(remy, gusteaus).
 viveEn(emille, chezMilleBar).
 viveEn(django, pisseriaJeSuis).
@@ -53,3 +53,35 @@ encargada(Persona, Plato, Restaurante):-
 
 experienciaEnRestaurante(Persona, Plato, Restaurante, Experiencia):-
     trabajaEn(Persona, Restaurante), sabeCocinar(Persona, Plato, Experiencia). 
+
+plato(ensaladaRusa, entrada([papa, zanahoria, arvejas, huevo, mayonesa])).
+plato(bifeDeChorizo, principal(pure, 20)).
+plato(frutillasConCrema, postre(30)).
+
+esSaludable(NombrePlato):- plato(NombrePlato, TipoPlato), cantCalorias(TipoPlato, Calorias), Calorias < 75.
+
+cantCalorias(entrada(Ingredientes), TotalCalorias):- length(Ingredientes, Cantidad), TotalCalorias is Cantidad * 15.
+cantCalorias(principal(Guarnicion, Minutos), TotalCalorias):- caloriasGuarnicion(Guarnicion, Calorias), TotalCalorias is Calorias + (5*Minutos).
+cantCalorias(postre(Calorias), Calorias).
+
+
+caloriasGuarnicion(papasFritas, 50).
+caloriasGuarnicion(pure, 20).
+caloriasGuarnicion(ensalada, 0).
+
+reseniaPositiva(Critico, Restaurante):-restaurante(Restaurante), not(viveEn(_, Restaurante)), criterioCritico(Critico, Restaurante).
+
+criterioCritico(antonEgo,Restaurante):- esEspecialista(Restaurante, ratatoullie).
+criterioCritico(cormillot, Restaurante):-forall(cocinaEn(Restaurante, Plato), esSaludable(Plato)).
+criterioCritico(martiniano, Restaurante):- esChef(Cocinero, Restaurante), not((esChef(OtroCocinero, Restaurante), Cocinero \= OtroCocinero)).
+
+esEspecialista(Restaurante,Comida):- forall(esChef(Cocinero, Restaurante), cocinaBien(Cocinero, Comida)).
+cocinaEn(Restaurante, Plato):-sabeCocinar(Persona, Plato, _), trabajaEn(Persona, Restaurante).
+
+
+
+
+
+
+
+
